@@ -1,28 +1,5 @@
 services:
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: userdb
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: useradmin
-      MYSQL_PASSWORD: secret
-    ports:
-      - "3306:3306"
-    networks:
-      - microservices-net
-
-  redis:
-    image: redis:7
-    container_name: redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - microservices-net
-
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -46,11 +23,55 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: |
-        PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - microservices-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: userdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: useradmin
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    networks:
+      - microservices-net
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - microservices-net
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "8888:8888"
+    networks:
+      - microservices-net
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
     networks:
       - microservices-net
 
@@ -62,6 +83,8 @@ services:
       - mysql
       - redis
       - kafka
+      - config-server
+      - eureka-server
     ports:
       - "8082:8082"
     networks:

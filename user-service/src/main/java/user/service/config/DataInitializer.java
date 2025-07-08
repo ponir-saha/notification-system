@@ -1,3 +1,4 @@
+/*
 package user.service.config;
 
 
@@ -68,3 +69,4 @@ public class DataInitializer {
 
 }
 
+*/
