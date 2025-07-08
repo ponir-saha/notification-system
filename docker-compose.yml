@@ -40,9 +40,11 @@ services:
       MYSQL_USER: useradmin
       MYSQL_PASSWORD: secret
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - microservices-net
+    volumes:
+      - ./mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
 
   redis:
     image: redis:7
@@ -53,27 +55,27 @@ services:
     networks:
       - microservices-net
 
+  discovery-service:
+    build:
+      context: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-net
+
   config-server:
     build:
       context: ./config-server
     container_name: config-server
     depends_on:
-      - eureka-server
+      - discovery-service
     ports:
       - "8888:8888"
     networks:
       - microservices-net
     environment:
       SPRING_PROFILES_ACTIVE: docker
-
-  eureka-server:
-    build:
-      context: ./eureka-server
-    container_name: eureka-server
-    ports:
-      - "8761:8761"
-    networks:
-      - microservices-net
 
   user-service:
     build:
@@ -84,7 +86,7 @@ services:
       - redis
       - kafka
       - config-server
-      - eureka-server
+      - discovery-service
     ports:
       - "8082:8082"
     networks:

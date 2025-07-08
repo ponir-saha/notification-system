@@ -1,4 +1,5 @@
-/*
+
+
 package user.service.config;
 
 
@@ -25,10 +26,6 @@ public class DataInitializer {
 
     @PostConstruct
     public void initClient() {
-        // Seed roles
-        for (String roleName : new String[]{"super_admin", "admin", "user"}) {
-            roleRepository.findById(roleName).orElseGet(() -> roleRepository.save(new Role(roleName)));
-        }
 
         // Seed client
         if (clientRepository.count() == 0) {
@@ -69,4 +66,4 @@ public class DataInitializer {
 
 }
 
-*/
+
