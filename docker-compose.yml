@@ -40,7 +40,7 @@ services:
       MYSQL_USER: useradmin
       MYSQL_PASSWORD: secret
     ports:
-      - "3307:3306"
+      - "3306:3306"
     networks:
       - microservices-net
     volumes:

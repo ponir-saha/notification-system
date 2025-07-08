@@ -1,7 +1,17 @@
 spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://user-service:8082
+          predicates:
+            - Path=/user-service/**
+      discovery:
+        locator:
+          enabled: true
   application:
     name: api-gateway
-
-  cloud:
-    config:
-      uri: http://config-server:8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
