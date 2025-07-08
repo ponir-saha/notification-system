@@ -4,6 +4,9 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  profiles:
+    active: local  # Activate local profile when running from IDE
+
 eureka:
   client:
     service-url:
