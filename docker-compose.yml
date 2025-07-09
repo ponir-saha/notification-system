@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
 
   zookeeper:
@@ -68,13 +70,19 @@ services:
       - "8761:8761"
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   config-server:
     build:
       context: ./config-server
     container_name: config-server
     depends_on:
-      - discovery-service
+      discovery-service:
+        condition: service_healthy
     ports:
       - "8888:8888"
     networks:
@@ -86,13 +94,15 @@ services:
     build:
       context: ./api-gateway
     container_name: api-gateway
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
     ports:
       - "8080:8080"
     networks:
       - microservices-net
-    depends_on:
-      - discovery-service
-      - config-server
 
   user-service:
     build:
@@ -106,9 +116,9 @@ services:
       kafka:
         condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
       discovery-service:
-        condition: service_started
+        condition: service_healthy
       api-gateway:
         condition: service_started
     ports:
@@ -121,5 +131,6 @@ services:
 networks:
   microservices-net:
     driver: bridge
+
 volumes:
   mysql-data:
