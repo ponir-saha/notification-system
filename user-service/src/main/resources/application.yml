@@ -12,3 +12,6 @@ eureka:
     prefer-ip-address: true
 server:
   port: 8082
+jwt:
+  secret: mySuperSecretJwtKey12345  # Should be at least 256 bits (32+ chars)
+  expiration: 3600000  # 1 hour in milliseconds

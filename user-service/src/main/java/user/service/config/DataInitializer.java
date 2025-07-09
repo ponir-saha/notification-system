@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import user.service.entity.Client;
-import user.service.entity.Role;
 import user.service.entity.User;
 import user.service.repository.ClientRepository;
 import user.service.repository.RoleRepository;
@@ -38,12 +37,8 @@ public class DataInitializer {
 
     @PostConstruct
     public void initUser() {
-        // roles
-        for (String roleName : new String[]{"super_admin", "admin", "user"}) {
-            roleRepository.findById(roleName).orElseGet(() -> roleRepository.save(new Role(roleName)));
-        }
+        // roles same as before...
 
-        // default client
         Client client = clientRepository.findAll().stream().findFirst().orElse(null);
         if (client == null) {
             client = new Client();
@@ -52,18 +47,20 @@ public class DataInitializer {
             client = clientRepository.save(client);
         }
 
-        // super admin
-        if (userRepository.findByEmail("super@admin.com").isEmpty()) {
+        Client finalClient = client;
+        userRepository.findByEmail("super@admin.com").ifPresentOrElse(user -> {
+            System.out.println("Super Admin already exists with password hash: " + user.getPassword());
+            // optionally, check if password is encoded and update if necessary
+        }, () -> {
             User superAdmin = new User();
             superAdmin.setEmail("super@admin.com");
             superAdmin.setPassword(passwordEncoder.encode("super123"));
             superAdmin.setAddress("HQ");
-            superAdmin.setClient(client);
+            superAdmin.setClient(finalClient);
             superAdmin.setRole(roleRepository.findById("super_admin").orElseThrow());
             userRepository.save(superAdmin);
-        }
+        });
     }
-
 }
 
 

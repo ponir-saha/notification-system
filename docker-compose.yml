@@ -44,7 +44,7 @@ services:
     networks:
       - microservices-net
     volumes:
-      - ./mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -121,3 +121,5 @@ services:
 networks:
   microservices-net:
     driver: bridge
+volumes:
+  mysql-data:
