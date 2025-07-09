@@ -89,6 +89,12 @@ services:
       - microservices-net
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   api-gateway:
     build:
