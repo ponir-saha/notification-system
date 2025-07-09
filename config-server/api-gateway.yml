@@ -7,25 +7,24 @@ spring:
 
   cloud:
     gateway:
-      server:
-        webflux:
-          routes:
-            - id: user-service
-              uri: lb://user-service
-              predicates:
-                - Path=/users/**
-            - id: common-service
-              uri: lb://common-service
-              predicates:
-                - Path=/common/**
-            - id: notification-service
-              uri: lb://notification-service
-              predicates:
-                - Path=/notifications/**
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+        - id: common-service
+          uri: lb://common-service
+          predicates:
+            - Path=/common/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
+
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 eureka:
   client:
