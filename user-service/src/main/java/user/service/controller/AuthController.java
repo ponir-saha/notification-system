@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,14 +26,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-/*        authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
         User user = userRepository.findByEmail(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));*/
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        String token = "hfjhsfhoirlknfnsdhfhsdhfhsdfjhsdkjfhjkd";
+        String token = jwtService.generateToken(user);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }

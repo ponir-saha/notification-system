@@ -21,9 +21,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/**") // Optional: restrict to specific paths
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/user-service/**").permitAll() // Allow gateway access
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

@@ -11,9 +11,9 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/**
+            - Path=/auth/**  # Match requests for /auth/*
           filters:
-            - StripPrefix=1
+            - RewritePath=/auth/(?<segment>.*), /$\\{segment}  # Remove /auth prefix
         - id: common-service
           uri: lb://common-service
           predicates:
