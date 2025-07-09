@@ -5,9 +5,9 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/auth/**  # Match requests starting with /user-service/auth/*
+            - Path=/auth/**  # Match requests starting with /auth/*
           filters:
-            - StripPrefix=1  # Remove the /user-service prefix
+            - StripPrefix=0  # Do not remove any prefix
       discovery:
         locator:
           enabled: true
