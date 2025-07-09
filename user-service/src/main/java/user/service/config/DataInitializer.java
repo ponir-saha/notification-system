@@ -25,6 +25,12 @@ public class DataInitializer {
 
     @PostConstruct
     public void initData() {
+        // Ensure required roles exist
+        createRoleIfMissing("super_admin");
+        createRoleIfMissing("admin");
+        createRoleIfMissing("user");
+
+        // Create a default client if not exists
         Client client = clientRepository.findAll().stream().findFirst().orElseGet(() -> {
             Client newClient = new Client();
             newClient.setName("Default Client");
@@ -32,7 +38,9 @@ public class DataInitializer {
             return clientRepository.save(newClient);
         });
 
+        // Create a default super admin user
         userRepository.findByEmail("super@admin.com").ifPresentOrElse(user -> {
+            // Already exists, do nothing
         }, () -> {
             User superAdmin = new User();
             superAdmin.setEmail("super@admin.com");
@@ -41,6 +49,14 @@ public class DataInitializer {
             superAdmin.setClient(client);
             superAdmin.setRole(roleRepository.findById("super_admin").orElseThrow());
             userRepository.save(superAdmin);
+        });
+    }
+
+    private void createRoleIfMissing(String roleName) {
+        roleRepository.findById(roleName).orElseGet(() -> {
+            var role = new user.service.entity.Role();
+            role.setName(roleName);
+            return roleRepository.save(role);
         });
     }
 }

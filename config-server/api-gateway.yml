@@ -9,9 +9,11 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: lb://user-service
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/**
+            - Path=/user-service/**
+          filters:
+            - StripPrefix=1
         - id: common-service
           uri: lb://common-service
           predicates:

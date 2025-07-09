@@ -87,8 +87,7 @@ services:
       - "8888:8888"
     networks:
       - microservices-net
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
+
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
       interval: 10s
@@ -131,9 +130,6 @@ services:
       - "8082:8082"
     networks:
       - microservices-net
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-
 networks:
   microservices-net:
     driver: bridge
