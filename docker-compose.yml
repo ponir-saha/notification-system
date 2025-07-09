@@ -45,6 +45,11 @@ services:
       - microservices-net
     volumes:
       - ./mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7
@@ -77,16 +82,35 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-net
+    depends_on:
+      - discovery-service
+      - config-server
+
   user-service:
     build:
       context: ./user-service
     container_name: user-service
     depends_on:
-      - mysql
-      - redis
-      - kafka
-      - config-server
-      - discovery-service
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      kafka:
+        condition: service_started
+      config-server:
+        condition: service_started
+      discovery-service:
+        condition: service_started
+      api-gateway:
+        condition: service_started
     ports:
       - "8082:8082"
     networks:
