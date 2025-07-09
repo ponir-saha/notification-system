@@ -8,20 +8,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-        - id: common-service
-          uri: lb://common-service
-          predicates:
-            - Path=/common/**
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/notifications/**
+          enabled: false
 
 eureka:
   client:

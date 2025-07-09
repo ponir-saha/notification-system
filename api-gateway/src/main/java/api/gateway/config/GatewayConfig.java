@@ -10,9 +10,15 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("user-service", r -> r.path("/users/**").uri("lb://user-service"))
-                .route("common-service", r -> r.path("/common/**").uri("lb://common-service"))
-                .route("notification-service", r -> r.path("/notifications/**").uri("lb://notification-service"))
+                .route("user-service", r -> r.path("/users/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://user-service"))
+                .route("common-service", r -> r.path("/common/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://common-service"))
+                .route("notification-service", r -> r.path("/notifications/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://notification-service"))
                 .build();
     }
 }

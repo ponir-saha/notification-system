@@ -24,39 +24,21 @@ public class DataInitializer {
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
-    public void initClient() {
+    public void initData() {
+        Client client = clientRepository.findAll().stream().findFirst().orElseGet(() -> {
+            Client newClient = new Client();
+            newClient.setName("Default Client");
+            newClient.setContactEmail("client@example.com");
+            return clientRepository.save(newClient);
+        });
 
-        // Seed client
-        if (clientRepository.count() == 0) {
-            Client defaultClient = new Client();
-            defaultClient.setName("Default Client");
-            defaultClient.setContactEmail("client@example.com");
-            clientRepository.save(defaultClient);
-        }
-    }
-
-    @PostConstruct
-    public void initUser() {
-        // roles same as before...
-
-        Client client = clientRepository.findAll().stream().findFirst().orElse(null);
-        if (client == null) {
-            client = new Client();
-            client.setName("Default Client");
-            client.setContactEmail("client@example.com");
-            client = clientRepository.save(client);
-        }
-
-        Client finalClient = client;
         userRepository.findByEmail("super@admin.com").ifPresentOrElse(user -> {
-            System.out.println("Super Admin already exists with password hash: " + user.getPassword());
-            // optionally, check if password is encoded and update if necessary
         }, () -> {
             User superAdmin = new User();
             superAdmin.setEmail("super@admin.com");
             superAdmin.setPassword(passwordEncoder.encode("super123"));
             superAdmin.setAddress("HQ");
-            superAdmin.setClient(finalClient);
+            superAdmin.setClient(client);
             superAdmin.setRole(roleRepository.findById("super_admin").orElseThrow());
             userRepository.save(superAdmin);
         });
