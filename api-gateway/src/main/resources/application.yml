@@ -2,9 +2,13 @@ spring:
   application:
     name: api-gateway
   config:
-    import: configserver:http://config-server:8888
+    import: optional:configserver:http://config-server:8888
+    fail-fast: false
 
 eureka:
   client:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
+
+server:
+  port: 8080

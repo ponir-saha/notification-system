@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   cloud:
     gateway:
@@ -11,3 +14,13 @@ spring:
       discovery:
         locator:
           enabled: false
+          lower-case-service-id: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
