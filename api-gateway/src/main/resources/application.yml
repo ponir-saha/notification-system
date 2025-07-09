@@ -1,14 +1,8 @@
 spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
   application:
     name: api-gateway
+  config:
+    import: configserver:http://config-server:8888
 
 eureka:
   client:
